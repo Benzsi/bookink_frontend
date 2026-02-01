@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import { Header } from './components/Header'
@@ -11,17 +11,39 @@ import type { User } from './services/api'
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Az oldal betöltésekor helyreállítjuk az előző felhasználót
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch (err) {
+        console.error('Felhasználó adatok betöltése sikertelen', err)
+        localStorage.removeItem('user')
+      }
+    }
+    setLoading(false)
+  }, [])
 
   const handleLogout = () => {
     setUser(null)
+    localStorage.removeItem('user')
   }
 
   const handleLoginSuccess = (userData: User) => {
     setUser(userData)
+    localStorage.setItem('user', JSON.stringify(userData))
   }
 
   const handleRegisterSuccess = (userData: User) => {
     setUser(userData)
+    localStorage.setItem('user', JSON.stringify(userData))
+  }
+
+  if (loading) {
+    return <div>Betöltés...</div>
   }
 
   return (

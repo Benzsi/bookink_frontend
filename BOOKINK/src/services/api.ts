@@ -11,7 +11,7 @@ interface RegisterRequest {
   password: string;
 }
 
-interface User {
+export interface User {
   id: number;
   username: string;
   email: string;
@@ -37,7 +37,7 @@ export class AuthService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'BejelentkezÈs sikertelen');
+      throw new Error(error.message || 'Bejelentkez√©s sikertelen');
     }
 
     return response.json();
@@ -54,7 +54,7 @@ export class AuthService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Regisztr·ciÛ sikertelen');
+      throw new Error(error.message || 'Regisztr√°ci√≥ sikertelen');
     }
 
     return response.json();
@@ -71,7 +71,7 @@ export class UsersService {
     });
 
     if (!response.ok) {
-      throw new Error('Felhaszn·lÛk lekÈrÈse sikertelen');
+      throw new Error('Felhaszn√°l√≥k lek√©r√©se sikertelen');
     }
 
     return response.json();
@@ -88,7 +88,7 @@ export class UsersService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Felhaszn·lÛ frissÌtÈse sikertelen');
+      throw new Error(error.message || 'Felhaszn√°l√≥ friss√≠t√©se sikertelen');
     }
 
     return response.json();
@@ -103,7 +103,7 @@ export class UsersService {
     });
 
     if (!response.ok) {
-      throw new Error('Felhaszn·lÛ tˆrlÈse sikertelen');
+      throw new Error('Felhaszn√°l√≥ t√∂rl√©se sikertelen');
     }
   }
 
@@ -118,7 +118,7 @@ export class UsersService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Felhaszn·lÛ lÈtrehoz·sa sikertelen');
+      throw new Error(error.message || 'Felhaszn√°l√≥ l√©trehoz√°sa sikertelen');
     }
 
     return response.json();
