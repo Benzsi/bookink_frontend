@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { User } from '../services/api';
+import { UsersService } from '../services/api';
 
 interface ProfileProps {
   user: User | null;
+  onUserUpdate?: (user: User) => void;
 }
 
-export function Profile({ user }: ProfileProps) {
+export function Profile({ user, onUserUpdate }: ProfileProps) {
+  const [username, setUsername] = useState(user?.username || '');
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [email, setEmail] = useState(user?.email || '');
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const usersService = new UsersService();
 
   if (!user) {
     return (
@@ -35,7 +42,68 @@ export function Profile({ user }: ProfileProps) {
         <div className="profile-info">
           <div className="info-group">
             <label>Felhasználónév:</label>
-            <p>{user.username}</p>
+            {isEditingUsername ? (
+              <div className="email-edit-form">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Felhasználónév"
+                  minLength={3}
+                  maxLength={32}
+                />
+                <button
+                  className="btn-small btn-save"
+                  onClick={async () => {
+                    setError('');
+                    if (!username.trim() || username.length < 3 || username.length > 32) {
+                      setError('A felhasználónév 3-32 karakter közötti kell legyen');
+                      return;
+                    }
+                    setLoading(true);
+                    try {
+                      const updated = await usersService.updateUser(user!.id, { username });
+                      setIsEditingUsername(false);
+                      setSuccess('Felhasználónév sikeresen frissítve!');
+                      if (onUserUpdate) {
+                        onUserUpdate(updated);
+                      }
+                      setTimeout(() => setSuccess(''), 3000);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Felhasználónév frissítése sikertelen');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  ✓ Mentés
+                </button>
+                <button
+                  className="btn-small btn-cancel"
+                  onClick={() => {
+                    setUsername(user!.username || '');
+                    setIsEditingUsername(false);
+                    setError('');
+                  }}
+                  disabled={loading}
+                >
+                  ✕ Mégsem
+                </button>
+              </div>
+            ) : (
+              <p>
+                {user.username}
+                <button
+                  className="btn-small btn-edit"
+                  onClick={() => setIsEditingUsername(true)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  ✎ Szerkesztés
+                </button>
+              </p>
+            )}
+            {error && isEditingUsername && <div className="error-message" style={{ marginTop: '8px', fontSize: '12px' }}>{error}</div>}
           </div>
           <div className="info-group">
             <label>Email cím:</label>
@@ -49,21 +117,40 @@ export function Profile({ user }: ProfileProps) {
                 />
                 <button
                   className="btn-small btn-save"
-                  onClick={() => {
-                    // TODO: Implement email update API call
-                    setIsEditingEmail(false);
-                    setSuccess('Email sikeresen frissítve!');
-                    setTimeout(() => setSuccess(''), 3000);
+                  onClick={async () => {
+                    setError('');
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                      setError('Kérlek adj meg egy érvényes email címet');
+                      return;
+                    }
+                    setLoading(true);
+                    try {
+                      const updated = await usersService.updateUser(user!.id, { email });
+                      setIsEditingEmail(false);
+                      setSuccess('Email sikeresen frissítve!');
+                      if (onUserUpdate) {
+                        onUserUpdate(updated);
+                      }
+                      setTimeout(() => setSuccess(''), 3000);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Email frissítése sikertelen');
+                    } finally {
+                      setLoading(false);
+                    }
                   }}
+                  disabled={loading}
                 >
                   ✓ Mentés
                 </button>
                 <button
                   className="btn-small btn-cancel"
                   onClick={() => {
-                    setEmail(user.email || '');
+                    setEmail(user!.email || '');
                     setIsEditingEmail(false);
+                    setError('');
                   }}
+                  disabled={loading}
                 >
                   ✕ Mégsem
                 </button>
@@ -80,6 +167,7 @@ export function Profile({ user }: ProfileProps) {
                 </button>
               </p>
             )}
+            {error && <div className="error-message" style={{ marginTop: '8px', fontSize: '12px' }}>{error}</div>}
           </div>
           <div className="info-group">
             <label>Szerepkör:</label>

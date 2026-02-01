@@ -42,6 +42,11 @@ function App() {
     localStorage.setItem('user', JSON.stringify(userData))
   }
 
+  const handleUserUpdate = (updatedUser: User) => {
+    setUser(updatedUser)
+    localStorage.setItem('user', JSON.stringify(updatedUser))
+  }
+
   if (loading) {
     return <div>Betöltés...</div>
   }
@@ -72,7 +77,7 @@ function App() {
               )
             }
           />
-          <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/profile" element={<Profile user={user} onUserUpdate={handleUserUpdate} />} />
           <Route path="/admin" element={<AdminUsers user={user} />} />
         </Routes>
       </main>

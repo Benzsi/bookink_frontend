@@ -15,7 +15,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #222; }
 .home-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
 .btn-primary { display: inline-block; padding: 10px 14px; background: #2f6fed; color: #fff; border-radius: 4px; text-decoration: none; border: none; }
 .btn-primary:hover { background: #255dcc; }
-.auth-container, .profile-container, .admin-container { width: 100%; max-width: 640px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; }
+.auth-container, .profile-container, .admin-container { width: 100%; max-width: 1200px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; }
 .form-group { margin-bottom: 12px; }
 .form-group label { display: block; margin-bottom: 6px; font-weight: 600; }
 .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
@@ -29,7 +29,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #222; }
 .info-group { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; }
 .admin-controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .users-table { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
-.table-header, .table-row { display: grid; grid-template-columns: 60px 1fr 120px 120px 200px; gap: 8px; padding: 10px; font-size: 14px; }
+.table-header, .table-row { display: grid; grid-template-columns: 60px 1fr 150px 100px 120px 150px; gap: 8px; padding: 10px; font-size: 14px; }
 .table-header { background: #f0f0f0; font-weight: 700; }
 .col-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .btn-small { padding: 6px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
