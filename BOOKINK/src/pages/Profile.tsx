@@ -7,13 +7,9 @@ interface ProfileProps {
 }
 
 export function Profile({ user }: ProfileProps) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState(user?.email || '');
   const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
 
   if (!user) {
     return (
@@ -26,40 +22,6 @@ export function Profile({ user }: ProfileProps) {
       </div>
     );
   }
-
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (!password || !confirmPassword) {
-      setError('Kérlek töltsd ki mindkét jelszó mezőt');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('A jelszavak nem egyeznek!');
-      return;
-    }
-
-    if (password.length < 4 || password.length > 64) {
-      setError('A jelszó 4-64 karakter közötti kell legyen');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // TODO: Implement password change API call
-      setSuccess('Jelszó sikeresen frissítve!');
-      setPassword('');
-      setConfirmPassword('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Jelszó frissítése sikertelen');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="profile-container">
