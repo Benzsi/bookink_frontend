@@ -5,9 +5,16 @@ interface LoginRequest {
   password: string;
 }
 
+interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+}
+
 interface User {
   id: number;
   username: string;
+  email: string;
   role: 'USER' | 'ADMIN';
   createdAt: string;
   updatedAt: string;
@@ -17,8 +24,6 @@ interface AuthResponse {
   message: string;
   user: User;
 }
-
-
 
 export class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
@@ -32,13 +37,13 @@ export class AuthService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Bejelentkez√©s sikertelen');
+      throw new Error(error.message || 'BejelentkezÈs sikertelen');
     }
 
     return response.json();
   }
 
-  async register(credentials: LoginRequest): Promise<AuthResponse> {
+  async register(credentials: RegisterRequest): Promise<AuthResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: {
@@ -49,7 +54,7 @@ export class AuthService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Regisztr√°ci√≥ sikertelen');
+      throw new Error(error.message || 'Regisztr·ciÛ sikertelen');
     }
 
     return response.json();
@@ -66,7 +71,7 @@ export class UsersService {
     });
 
     if (!response.ok) {
-      throw new Error('Felhaszn√°l√≥k lek√©r√©se sikertelen');
+      throw new Error('Felhaszn·lÛk lekÈrÈse sikertelen');
     }
 
     return response.json();
@@ -83,7 +88,7 @@ export class UsersService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Felhaszn√°l√≥ friss√≠t√©se sikertelen');
+      throw new Error(error.message || 'Felhaszn·lÛ frissÌtÈse sikertelen');
     }
 
     return response.json();
@@ -98,11 +103,11 @@ export class UsersService {
     });
 
     if (!response.ok) {
-      throw new Error('Felhaszn√°l√≥ t√∂rl√©se sikertelen');
+      throw new Error('Felhaszn·lÛ tˆrlÈse sikertelen');
     }
   }
 
-  async createUser(data: LoginRequest & { role?: string }): Promise<User> {
+  async createUser(data: Partial<User> & { password: string }): Promise<User> {
     const response = await fetch(`${API_BASE_URL}/users`, {
       method: 'POST',
       headers: {
@@ -113,11 +118,9 @@ export class UsersService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Felhaszn√°l√≥ l√©trehoz√°sa sikertelen');
+      throw new Error(error.message || 'Felhaszn·lÛ lÈtrehoz·sa sikertelen');
     }
 
     return response.json();
   }
 }
-
-export type { LoginRequest, User, AuthResponse };

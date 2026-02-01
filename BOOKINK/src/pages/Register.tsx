@@ -8,6 +8,7 @@ interface RegisterProps {
 
 export function Register({ onRegisterSuccess }: RegisterProps) {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -34,10 +35,16 @@ export function Register({ onRegisterSuccess }: RegisterProps) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Kérlek adj meg egy érvényes email címet');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const result = await authService.register({ username, password });
+      const result = await authService.register({ username, email, password });
       onRegisterSuccess(result.user);
       navigate('/');
     } catch (err) {
@@ -64,6 +71,18 @@ export function Register({ onRegisterSuccess }: RegisterProps) {
             onChange={(e) => setUsername(e.target.value)}
             required
             placeholder="Felhasználónév (3-32 karakter)"
+            disabled={loading}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email cím</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="pelda@email.com"
             disabled={loading}
           />
         </div>

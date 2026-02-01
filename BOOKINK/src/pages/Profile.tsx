@@ -9,6 +9,8 @@ interface ProfileProps {
 export function Profile({ user }: ProfileProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState(user?.email || '');
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -74,6 +76,50 @@ export function Profile({ user }: ProfileProps) {
             <p>{user.username}</p>
           </div>
           <div className="info-group">
+            <label>Email cím:</label>
+            {isEditingEmail ? (
+              <div className="email-edit-form">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email cím"
+                />
+                <button
+                  className="btn-small btn-save"
+                  onClick={() => {
+                    // TODO: Implement email update API call
+                    setIsEditingEmail(false);
+                    setSuccess('Email sikeresen frissítve!');
+                    setTimeout(() => setSuccess(''), 3000);
+                  }}
+                >
+                  ✓ Mentés
+                </button>
+                <button
+                  className="btn-small btn-cancel"
+                  onClick={() => {
+                    setEmail(user.email || '');
+                    setIsEditingEmail(false);
+                  }}
+                >
+                  ✕ Mégsem
+                </button>
+              </div>
+            ) : (
+              <p>
+                {user.email || 'Nincs megadva'}
+                <button
+                  className="btn-small btn-edit"
+                  onClick={() => setIsEditingEmail(true)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  ✎ Szerkesztés
+                </button>
+              </p>
+            )}
+          </div>
+          <div className="info-group">
             <label>Szerepkör:</label>
             <p>
               {user.role === 'ADMIN' ? '👨‍💼 Administrator' : '👤 Felhasználó'}
@@ -96,40 +142,6 @@ export function Profile({ user }: ProfileProps) {
             </Link>
           </div>
         )}
-
-        <div className="password-change-section">
-          <h2>Jelszó módosítása</h2>
-          {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
-          
-          <form onSubmit={handlePasswordChange}>
-            <div className="form-group">
-              <label htmlFor="password">Új jelszó</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Új jelszó"
-                disabled={loading}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Jelszó megerősítése</label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Jelszó megerősítése"
-                disabled={loading}
-              />
-            </div>
-            <button type="submit" className="form-submit" disabled={loading}>
-              {loading ? 'Frissítés...' : 'Jelszó módosítása'}
-            </button>
-          </form>
-        </div>
       </div>
     </div>
   );

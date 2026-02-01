@@ -15,9 +15,11 @@ export function AdminUsers({ user }: AdminProps) {
   const [success, setSuccess] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newUsername, setNewUsername] = useState('');
+  const [newEmail, setNewEmail] = useState('');
   const [newRole, setNewRole] = useState<'USER' | 'ADMIN'>('USER');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [createUsername, setCreateUsername] = useState('');
+  const [createEmail, setCreateEmail] = useState('');
   const [createPassword, setCreatePassword] = useState('');
   const [createRole, setCreateRole] = useState<'USER' | 'ADMIN'>('USER');
 
@@ -66,6 +68,7 @@ export function AdminUsers({ user }: AdminProps) {
     try {
       const updated = await usersService.updateUser(id, {
         username: newUsername,
+        email: newEmail,
         role: newRole,
       });
       
@@ -98,15 +101,23 @@ export function AdminUsers({ user }: AdminProps) {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(createEmail)) {
+      setError('Kérlek adj meg egy érvényes email címet');
+      return;
+    }
+
     try {
       const newUser = await usersService.createUser({
         username: createUsername,
+        email: createEmail,
         password: createPassword,
         role: createRole,
       });
 
       setUsers([...users, newUser]);
       setCreateUsername('');
+      setCreateEmail('');
       setCreatePassword('');
       setCreateRole('USER');
       setShowCreateForm(false);
@@ -168,6 +179,16 @@ export function AdminUsers({ user }: AdminProps) {
                 />
               </div>
               <div className="form-group">
+                <label htmlFor="createEmail">Email cím</label>
+                <input
+                  id="createEmail"
+                  type="email"
+                  value={createEmail}
+                  onChange={(e) => setCreateEmail(e.target.value)}
+                  placeholder="pelda@email.com"
+                />
+              </div>
+              <div className="form-group">
                 <label htmlFor="createPassword">Jelszó</label>
                 <input
                   id="createPassword"
@@ -202,6 +223,7 @@ export function AdminUsers({ user }: AdminProps) {
             <div className="table-header">
               <div className="col-id">ID</div>
               <div className="col-username">Felhasználónév</div>
+              <div className="col-email">Email</div>
               <div className="col-role">Szerepkör</div>
               <div className="col-created">Létrehozva</div>
               <div className="col-actions">Műveletek</div>
@@ -218,6 +240,14 @@ export function AdminUsers({ user }: AdminProps) {
                         value={newUsername}
                         onChange={(e) => setNewUsername(e.target.value)}
                         placeholder="Felhasználónév"
+                      />
+                    </div>
+                    <div className="col-email">
+                      <input
+                        type="email"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        placeholder="Email cím"
                       />
                     </div>
                     <div className="col-role">
@@ -251,6 +281,7 @@ export function AdminUsers({ user }: AdminProps) {
                   <>
                     <div className="col-id">{u.id}</div>
                     <div className="col-username">{u.username}</div>
+                    <div className="col-email">{u.email || '-'}</div>
                     <div className="col-role">
                       {u.role === 'ADMIN' ? '👨‍💼 Admin' : '👤 User'}
                     </div>
@@ -263,6 +294,7 @@ export function AdminUsers({ user }: AdminProps) {
                         onClick={() => {
                           setEditingId(u.id);
                           setNewUsername(u.username);
+                          setNewEmail(u.email || '');
                           setNewRole(u.role);
                         }}
                       >
