@@ -39,14 +39,14 @@ export function Login({ onLoginSuccess }: LoginProps) {
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="username">Felhasználónév</label>
+          <label htmlFor="username">Felhasználónév vagy Email</label>
           <input
             id="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            placeholder="Felhasználónév"
+            placeholder="Felhasználónév vagy email cím"
             disabled={loading}
           />
         </div>
