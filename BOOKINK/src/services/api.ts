@@ -23,6 +23,20 @@ export interface User {
 interface AuthResponse {
   message: string;
   user: User;
+  token: string;
+}
+
+export interface Book {
+  id: number;
+  sequenceNumber: number;
+  title: string;
+  author: string;
+  coverUrl?: string;
+  commentId?: number;
+  rating?: number;
+  genre: string;
+  literaryForm: string;
+  lyricNote?: string;
 }
 
 export class AuthService {
@@ -122,5 +136,84 @@ export class UsersService {
     }
 
     return response.json();
+  }
+}
+
+export class BooksService {
+  async getAllBooks(): Promise<Book[]> {
+    const response = await fetch(`${API_BASE_URL}/books`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Könyvek lekérése sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async getBook(id: number): Promise<Book> {
+    const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Könyv lekérése sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async createBook(data: Partial<Book> & { title: string; author: string }): Promise<Book> {
+    const response = await fetch(`${API_BASE_URL}/books`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Könyv létrehozása sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async updateBook(id: number, data: Partial<Book>): Promise<Book> {
+    const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Könyv frissítése sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async deleteBook(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/books/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Könyv törlése sikertelen');
+    }
   }
 }

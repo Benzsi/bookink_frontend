@@ -45,6 +45,9 @@ export function Register({ onRegisterSuccess }: RegisterProps) {
 
     try {
       const result = await authService.register({ username, email, password });
+      if (result.token) {
+        localStorage.setItem('authToken', result.token);
+      }
       onRegisterSuccess(result.user);
       navigate('/');
     } catch (err) {

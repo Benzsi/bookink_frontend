@@ -12,7 +12,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Brand Colors */
+  /* Brand Colors - or in new global.css if more needed */ 
   --color-primary: #DF3C5F;
   --color-secondary: #224193;
   --color-accent: #6F9BD1;

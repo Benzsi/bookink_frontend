@@ -30,6 +30,7 @@ function App() {
   const handleLogout = () => {
     setUser(null)
     localStorage.removeItem('user')
+    localStorage.removeItem('authToken')
   }
 
   const handleLoginSuccess = (userData: User) => {
@@ -56,7 +57,7 @@ function App() {
       <Header isAuthenticated={user !== null} onLogout={handleLogout} />
       <main className="main-container">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home user={user} />} />
           <Route
             path="/login"
             element={

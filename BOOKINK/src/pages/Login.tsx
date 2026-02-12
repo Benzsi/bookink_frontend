@@ -21,6 +21,9 @@ export function Login({ onLoginSuccess }: LoginProps) {
 
     try {
       const result = await authService.login({ username, password });
+      if (result.token) {
+        localStorage.setItem('authToken', result.token);
+      }
       onLoginSuccess(result.user);
       navigate('/');
     } catch (err) {
