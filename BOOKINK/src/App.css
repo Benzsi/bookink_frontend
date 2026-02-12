@@ -6,23 +6,23 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #222; }
 .header-buttons { display: flex; gap: 8px; }
 .btn { border: 1px solid #ccc; background: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; text-decoration: none; color: #222; font-size: 14px; }
 .btn:hover { background: #f0f0f0; }
-.btn-register { background: #e6f0ff; border-color: #bcd4ff; }
-.btn-logout { background: #ffecec; border-color: #f5c2c2; }
+.btn-register { background: var(--color-primary); border-color: #bcd4ff; }
+.btn-logout { background: var(--color-accent); border-color: #f5c2c2; }
 .main-container { flex: 1; padding: 24px; display: flex; justify-content: center; align-items: flex-start; }
 .home { max-width: 640px; width: 100%; }
 .home h1 { font-size: 28px; margin-bottom: 12px; }
 .home p { margin-bottom: 16px; line-height: 1.5; color: #444; }
 .home-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-primary { display: inline-block; padding: 10px 14px; background: #2f6fed; color: #fff; border-radius: 4px; text-decoration: none; border: none; }
+.btn-primary { display: inline-block; padding: 10px 14px; background: var(--color-primary); color: #fff; border-radius: 4px; text-decoration: none; border: none; }
 .btn-primary:hover { background: #255dcc; }
-.auth-container, .profile-container, .admin-container { width: 100%; max-width: 1200px; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; }
+.auth-container, .profile-container, .admin-container { width: 100%; max-width: 1200px; background: var(--color-accent); border: 1px solid #ddd; border-radius: 6px; padding: 20px; }
 .form-group { margin-bottom: 12px; }
 .form-group label { display: block; margin-bottom: 6px; font-weight: 600; }
 .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-.form-submit { width: 100%; padding: 10px; background: #2f6fed; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+.form-submit { width: 100%; padding: 10px; background: var(--color-accent); color: #fff; border: none; border-radius: 4px; cursor: pointer; }
 .form-submit:hover { background: #255dcc; }
 .form-link { margin-top: 10px; text-align: center; font-size: 14px; }
-.back-btn { display: inline-block; margin-bottom: 12px; color: #2f6fed; text-decoration: none; font-size: 14px; }
+.back-btn { display: inline-block; margin-bottom: 12px; color: var(--color-accent); text-decoration: none; font-size: 14px; }
 .error-message { padding: 10px; background: #ffecec; border: 1px solid #f5c2c2; border-radius: 4px; margin-bottom: 12px; }
 .success-message { padding: 10px; background: #ecffec; border: 1px solid #b8e6b8; border-radius: 4px; margin-bottom: 12px; }
 .profile-info { margin-bottom: 16px; }
@@ -30,11 +30,11 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #222; }
 .admin-controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .users-table { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
 .table-header, .table-row { display: grid; grid-template-columns: 60px 1fr 150px 100px 120px 150px; gap: 8px; padding: 10px; font-size: 14px; }
-.table-header { background: #f0f0f0; font-weight: 700; }
+.table-header { background: var(--color-primary); font-weight: 700; }
 .col-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .btn-small { padding: 6px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
-.btn-edit { background: #e6f0ff; }
-.btn-delete { background: #ffecec; }
-.btn-save { background: #ecffec; }
+.btn-edit { background: var(--color-primary); }
+.btn-delete { background: var(--color-accent); }
+.btn-save { background: var(--color-secondary); }
 .btn-cancel { background: #f0f0f0; }
 @media (max-width: 900px) { .table-header, .table-row { grid-template-columns: 1fr; } }

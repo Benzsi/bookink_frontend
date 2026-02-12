@@ -11,6 +11,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Brand Colors */
+  --color-primary: #DF3C5F;
+  --color-secondary: #224193;
+  --color-accent: #6F9BD1;
 }
 
 a {
