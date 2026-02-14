@@ -1,21 +1,30 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import type { User, Book } from '../services/api';
-import { BooksService } from '../services/api';
+import { BooksService, RatingsService } from '../services/api';
+import { StarRating } from '../components/StarRating';
 
 interface HomeProps {
   user?: User | null;
 }
 
+interface BookWithRating extends Book {
+  averageRating?: number;
+  totalRatings?: number;
+}
+
 export function Home({ user }: HomeProps) {
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<BookWithRating[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [userRatings, setUserRatings] = useState<Record<number, number>>({});
   const booksService = new BooksService();
+  const ratingsService = new RatingsService();
 
   useEffect(() => {
     if (user) {
       fetchBooks();
+      loadUserRatings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -24,12 +33,59 @@ export function Home({ user }: HomeProps) {
     setLoading(true);
     try {
       const data = await booksService.getAllBooks();
-      setBooks(data);
+      
+      // Lekérjük az átlagos értékeléseket is
+      const booksWithRatings = await Promise.all(
+        data.map(async (book) => {
+          try {
+            const bookRating = await ratingsService.getBookRating(book.id);
+            return {
+              ...book,
+              averageRating: bookRating.averageRating || 0,
+              totalRatings: bookRating.totalRatings || 0,
+            };
+          } catch {
+            return {
+              ...book,
+              averageRating: 0,
+              totalRatings: 0,
+            };
+          }
+        })
+      );
+      
+      setBooks(booksWithRatings);
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Könyvek lekérése sikertelen');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadUserRatings = async () => {
+    if (!user) return;
+    try {
+      const ratings = await ratingsService.getUserRatings(user.id);
+      const ratingsMap: Record<number, number> = {};
+      ratings.forEach((r: any) => {
+        ratingsMap[r.bookId] = r.rating;
+      });
+      setUserRatings(ratingsMap);
+    } catch (err) {
+      console.error('Felhasználó értékelésének lekérése sikertelen:', err);
+    }
+  };
+
+  const handleRate = async (bookId: number, rating: number) => {
+    if (!user) return;
+    try {
+      await ratingsService.rateBook(user.id, bookId, rating);
+      setUserRatings({ ...userRatings, [bookId]: rating });
+      // Frissítjük a könyvek listáját az új átlaggal
+      await fetchBooks();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Hiba az értékelés során');
     }
   };
 
@@ -91,14 +147,34 @@ export function Home({ user }: HomeProps) {
                   <span className="badge">{book.literaryForm}</span>
                   <span className="badge badge-genre">{book.genre}</span>
                 </div>
+                
+                {/* Átlagos értékelés megjelenítése */}
+                <div className="book-rating-section" style={{ marginBottom: '12px' }}>
+                  <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
+                    Átlagos értékelés:
+                  </div>
+                  <StarRating
+                    rating={book.averageRating || 0}
+                    totalRatings={book.totalRatings || 0}
+                    readonly
+                    size="small"
+                  />
+                </div>
+
+                {/* Felhasználó értékelése */}
+                <div className="user-rating-section" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid #eee' }}>
+                  <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
+                    {userRatings[book.id] ? 'Az értékelésed:' : 'Értékeld te is:'}
+                  </div>
+                  <StarRating
+                    rating={userRatings[book.id] || 0}
+                    onRate={(rating) => handleRate(book.id, rating)}
+                    size="medium"
+                  />
+                </div>
+                
                 {book.lyricNote && (
                   <p className="book-lyric-note">"{book.lyricNote}"</p>
-                )}
-                {book.rating && (
-                  <div className="book-rating">
-                    <span className="stars">{'⭐'.repeat(Math.floor(book.rating))}</span>
-                    <span className="rating-value">{book.rating}/5</span>
-                  </div>
                 )}
                 <span className="book-number">#{book.sequenceNumber}</span>
               </div>

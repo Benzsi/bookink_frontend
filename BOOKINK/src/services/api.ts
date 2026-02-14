@@ -1,4 +1,10 @@
 const API_BASE_URL = 'http://localhost:3000';
+const API_URL = `${API_BASE_URL}/api`;
+
+const getAuthHeader = () => {
+  const token = localStorage.getItem('authToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 interface LoginRequest {
   username: string;
@@ -37,6 +43,21 @@ export interface Book {
   genre: string;
   literaryForm: string;
   lyricNote?: string;
+}
+
+export interface Rating {
+  id: number;
+  userId: number;
+  bookId: number;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BookRating {
+  bookId: number;
+  averageRating: number;
+  totalRatings: number;
 }
 
 export class AuthService {
@@ -145,6 +166,7 @@ export class BooksService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
     });
 
@@ -160,6 +182,7 @@ export class BooksService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
     });
 
@@ -175,6 +198,7 @@ export class BooksService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
       body: JSON.stringify(data),
     });
@@ -192,6 +216,7 @@ export class BooksService {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
       body: JSON.stringify(data),
     });
@@ -209,11 +234,72 @@ export class BooksService {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeader(),
       },
     });
 
     if (!response.ok) {
       throw new Error('Könyv törlése sikertelen');
     }
+  }
+}
+
+export class RatingsService {
+  async rateBook(userId: number, bookId: number, rating: number): Promise<Rating> {
+    const response = await fetch(`${API_URL}/ratings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ userId, bookId, rating }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Értékelés hozzáadása sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async getUserRating(userId: number, bookId: number): Promise<Rating | null> {
+    const response = await fetch(`${API_URL}/ratings/user/${userId}/book/${bookId}`, {
+      headers: getAuthHeader(),
+    });
+
+    if (response.status === 404) {
+      return null;
+    }
+
+    if (!response.ok) {
+      throw new Error('Felhasználó értékelésének lekérése sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async getBookRating(bookId: number): Promise<BookRating> {
+    const response = await fetch(`${API_URL}/ratings/book/${bookId}`, {
+      headers: getAuthHeader(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Könyv értékelésének lekérése sikertelen');
+    }
+
+    return response.json();
+  }
+
+  async getUserRatings(userId: number): Promise<Rating[]> {
+    const response = await fetch(`${API_URL}/ratings/user/${userId}`, {
+      headers: getAuthHeader(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Felhasználó értékelésének lekérése sikertelen');
+    }
+
+    return response.json();
   }
 }
