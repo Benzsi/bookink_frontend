@@ -38,7 +38,7 @@ export function Profile({ user, onUserUpdate }: ProfileProps) {
 
       <div className="profile-section">
         <h1>Profil</h1>
-        
+        {success && <div className="success-message" style={{ marginBottom: '16px' }}>{success}</div>}
         <div className="profile-info">
           <div className="info-group">
             <label>Felhasználónév:</label>
