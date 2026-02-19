@@ -196,7 +196,7 @@ export function Profile({ user, onUserUpdate }: ProfileProps) {
         )}
 
         <div style={{ marginTop: 32, display: 'flex', justifyContent: 'flex-end' }}>
-          <button className="btn btn-logout" onClick={() => {
+          <button className="btn btn-logout" style={{ color: '#fff', background: '#e74c3c', border: 'none' }} onClick={() => {
             localStorage.removeItem('user');
             localStorage.removeItem('authToken');
             window.location.href = '/';

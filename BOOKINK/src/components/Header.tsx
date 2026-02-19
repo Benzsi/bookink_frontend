@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logo from '../assets/bookink_logo.png';
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -9,8 +10,11 @@ export function Header({ isAuthenticated, onLogout }: HeaderProps) {
   return (
     <header className="header" style={{ paddingLeft: 350, paddingRight: 350 }}>
       <nav className="navbar" style={{ width: '100%' }}>
-        <Link to="/" className="header-logo">
-          📚 Bookink
+        <Link to="/" className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <img src={logo} alt="Bookink logo" style={{ height: 48, width: 48, objectFit: 'contain', borderRadius: 8, background: '#fff', marginRight: 8 }} />
+            Bookink
+          </span>
         </Link>
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
           <div className="navbar-search-inline">
