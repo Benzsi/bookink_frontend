@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export function Header({ isAuthenticated, onLogout }: HeaderProps) {
   return (
-    <header className="header">
+    <header className="header" style={{ paddingLeft: 350, paddingRight: 350 }}>
       <nav className="navbar" style={{ width: '100%' }}>
         <Link to="/" className="header-logo">
           📚 Bookink
@@ -27,24 +27,15 @@ export function Header({ isAuthenticated, onLogout }: HeaderProps) {
           </Link>
         )}
         {isAuthenticated ? (
-          <div className="navbar-profile-dropdown">
-            <Link to="/profile" className="btn btn-login">
-              👤 Profil
-            </Link>
-            <button
-              className="btn btn-logout"
-              onClick={onLogout}
-              style={{ marginLeft: 8 }}
-            >
-              Kijelentkezés
-            </button>
-          </div>
+          <Link to="/profile" className="navbar-link">
+            👤 Profil
+          </Link>
         ) : (
           <>
-            <Link to="/login" className="btn btn-login">
+            <Link to="/login" className="navbar-link">
               Bejelentkezés
             </Link>
-            <Link to="/register" className="btn btn-register">
+            <Link to="/register" className="navbar-link">
               Regisztráció
             </Link>
           </>

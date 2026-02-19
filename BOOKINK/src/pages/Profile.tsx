@@ -192,6 +192,16 @@ export function Profile({ user, onUserUpdate }: ProfileProps) {
             </Link>
           </div>
         )}
+
+        <div style={{ marginTop: 32, display: 'flex', justifyContent: 'flex-end' }}>
+          <button className="btn btn-logout" onClick={() => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
+          }}>
+            Kijelentkezés
+          </button>
+        </div>
       </div>
     </div>
   );

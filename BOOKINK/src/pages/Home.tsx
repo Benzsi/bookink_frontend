@@ -139,7 +139,7 @@ export function Home({ user }: HomeProps) {
   // Ha bejelentkezve van, mutasd a könyveket
   return (
     <div className="home-authenticated">
-      <h1>📚 Könyvek katalógusa</h1>
+      <h1>Könyvek katalógusa</h1>
       
       {error && <div className="error-message">{error}</div>}
       
