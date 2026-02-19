@@ -5,6 +5,9 @@ import { BooksService, RatingsService } from '../services/api';
 import { StarRating } from '../components/StarRating';
 import { CommentModal } from '../components/CommentModal';
 import { BookBack } from '../components/BookBack';
+import { AddToListModal } from '../components/AddToListModal';
+import { getListsForUser, createListForUser, addBookToList } from '../services/lists';
+import type { BookList } from '../services/lists';
 
 interface HomeProps {
   user?: User | null;
@@ -23,7 +26,9 @@ export function Home({ user }: HomeProps) {
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookWithRating | null>(null);
   const [flippedBookId, setFlippedBookId] = useState<number | null>(null);
-  const [bookComments, setBookComments] = useState<Record<number, { user: string; text: string }[]>>({});
+  const [addListModalOpen, setAddListModalOpen] = useState(false);
+  const [lists, setLists] = useState<BookList[]>([]);
+  const [selectedBookForList, setSelectedBookForList] = useState<BookWithRating | null>(null);
   const booksService = new BooksService();
   const ratingsService = new RatingsService();
 
@@ -31,6 +36,7 @@ export function Home({ user }: HomeProps) {
     if (user) {
       fetchBooks();
       loadUserRatings();
+      setLists(getListsForUser(String(user.id)));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -103,17 +109,34 @@ export function Home({ user }: HomeProps) {
     setCommentModalOpen(false);
     setSelectedBook(null);
   };
-  const handleSaveComment = (comment: string) => {
-    // TODO: Küldd el a kommentet az adatbázisba
-    setCommentModalOpen(false);
-    setSelectedBook(null);
-  };
 
   const handleFlipBook = (bookId: number) => {
     setFlippedBookId((prev) => (prev === bookId ? null : bookId));
     // TODO: Itt lehetne kommenteket betölteni az adatbázisból
   };
-  const handleCloseBack = () => setFlippedBookId(null);
+
+  const handleOpenAddList = (book: BookWithRating) => {
+    setSelectedBookForList(book);
+    setAddListModalOpen(true);
+  };
+  const handleCloseAddList = () => {
+    setAddListModalOpen(false);
+    setSelectedBookForList(null);
+  };
+  const handleAddBookToList = (listId: string) => {
+    if (user && selectedBookForList) {
+      addBookToList(String(user.id), listId, selectedBookForList.id);
+      setLists(getListsForUser(String(user.id)));
+      setAddListModalOpen(false);
+      setSelectedBookForList(null);
+    }
+  };
+  const handleCreateList = (name: string) => {
+    if (user) {
+      createListForUser(String(user.id), name);
+      setLists(getListsForUser(String(user.id)));
+    }
+  };
 
   // Ha nincs bejelentkezve, mutasd az üdvözlő képernyőt
   if (!user) {
@@ -158,7 +181,7 @@ export function Home({ user }: HomeProps) {
                     author={book.author}
                     averageRating={book.averageRating || 0}
                     totalRatings={book.totalRatings || 0}
-                    comments={bookComments[book.id] || []}
+                    comments={[]}
 
                   />
                 </div>
@@ -215,7 +238,7 @@ export function Home({ user }: HomeProps) {
                   </div>
                   <div className="book-card-actions">
                     <button className="btn btn-comment" onClick={() => handleOpenComment(book)}>Komment</button>
-                    <button className="btn btn-addlist">Listához adás</button>
+                    <button className="btn btn-addlist" onClick={() => handleOpenAddList(book)}>Listához adás</button>
                   </div>
                 </>
               )}
@@ -228,8 +251,16 @@ export function Home({ user }: HomeProps) {
       <CommentModal
         isOpen={commentModalOpen}
         onClose={handleCloseComment}
-        onSave={handleSaveComment}
+        onSave={() => {}}
         bookTitle={selectedBook?.title || ''}
+      />
+      <AddToListModal
+        isOpen={addListModalOpen}
+        onClose={handleCloseAddList}
+        onAdd={handleAddBookToList}
+        lists={lists}
+        bookTitle={selectedBookForList?.title || ''}
+        onCreateList={handleCreateList}
       />
     </div>
   );

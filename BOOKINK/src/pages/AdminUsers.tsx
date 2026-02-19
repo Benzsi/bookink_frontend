@@ -155,6 +155,7 @@ export function AdminUsers({ user }: AdminProps) {
         <div className="admin-controls">
           <button
             className="btn-primary"
+            style={showCreateForm ? { color: '#fff', background: '#e74c3c', border: 'none' } : {}}
             onClick={() => setShowCreateForm(!showCreateForm)}
           >
             {showCreateForm ? '✕ Mégsem' : '+ Új felhasználó'}
@@ -271,6 +272,7 @@ export function AdminUsers({ user }: AdminProps) {
                       </button>
                       <button
                         className="btn-small btn-cancel"
+                        style={{ color: '#fff', background: '#e74c3c', border: 'none' }}
                         onClick={() => setEditingId(null)}
                       >
                         ✕ Mégsem
@@ -302,6 +304,7 @@ export function AdminUsers({ user }: AdminProps) {
                       </button>
                       <button
                         className="btn-small btn-delete"
+                        style={{ color: '#fff', background: '#e74c3c', border: 'none' }}
                         onClick={() => handleDeleteUser(u.id)}
                       >
                         🗑 Törlés

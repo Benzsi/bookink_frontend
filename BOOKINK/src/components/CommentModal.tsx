@@ -27,10 +27,10 @@ export function CommentModal({ isOpen, onClose, onSave, bookTitle }: CommentModa
           onChange={e => setComment(e.target.value)}
           placeholder="Írd be a kommented..."
           rows={7}
-          style={{ width: '100%', minHeight: 120, fontSize: 18, borderRadius: 10, border: '1.5px solid var(--color-primary)', padding: 16, marginBottom: 18, resize: 'vertical', background: '#f8faff' }}
+          style={{ width: '100%', minHeight: 120, fontSize: 18, borderRadius: 10, border: '1.5px solid var(--color-primary)', padding: 16, marginBottom: 18, resize: 'vertical', background: '#f8faff', color: '#222' }}
         />
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-          <button className="btn" style={{ fontSize: 16, padding: '10px 22px' }} onClick={onClose}>Mégse</button>
+          <button className="btn" style={{ fontSize: 16, padding: '10px 22px', color: '#fff', background: '#e74c3c', border: 'none' }} onClick={onClose}>Mégse</button>
           <button className="btn btn-primary" style={{ fontSize: 16, padding: '10px 22px' }} onClick={() => onSave(comment)} disabled={!comment.trim()}>
             Mentés
           </button>

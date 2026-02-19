@@ -81,6 +81,7 @@ export function Profile({ user, onUserUpdate }: ProfileProps) {
                 </button>
                 <button
                   className="btn-small btn-cancel"
+                  style={{ color: '#fff', background: '#e74c3c', border: 'none' }}
                   onClick={() => {
                     setUsername(user!.username || '');
                     setIsEditingUsername(false);
@@ -145,6 +146,7 @@ export function Profile({ user, onUserUpdate }: ProfileProps) {
                 </button>
                 <button
                   className="btn-small btn-cancel"
+                  style={{ color: '#fff', background: '#e74c3c', border: 'none' }}
                   onClick={() => {
                     setEmail(user!.email || '');
                     setIsEditingEmail(false);
