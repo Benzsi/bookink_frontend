@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import type { User, Book } from '../services/api';
 import { BooksService, RatingsService } from '../services/api';
 import { StarRating } from '../components/StarRating';
+import { CommentModal } from '../components/CommentModal';
+import { BookBack } from '../components/BookBack';
 
 interface HomeProps {
   user?: User | null;
@@ -18,6 +20,10 @@ export function Home({ user }: HomeProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [userRatings, setUserRatings] = useState<Record<number, number>>({});
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BookWithRating | null>(null);
+  const [flippedBookId, setFlippedBookId] = useState<number | null>(null);
+  const [bookComments, setBookComments] = useState<Record<number, { user: string; text: string }[]>>({});
   const booksService = new BooksService();
   const ratingsService = new RatingsService();
 
@@ -89,6 +95,26 @@ export function Home({ user }: HomeProps) {
     }
   };
 
+  const handleOpenComment = (book: BookWithRating) => {
+    setSelectedBook(book);
+    setCommentModalOpen(true);
+  };
+  const handleCloseComment = () => {
+    setCommentModalOpen(false);
+    setSelectedBook(null);
+  };
+  const handleSaveComment = (comment: string) => {
+    // TODO: Küldd el a kommentet az adatbázisba
+    setCommentModalOpen(false);
+    setSelectedBook(null);
+  };
+
+  const handleFlipBook = (bookId: number) => {
+    setFlippedBookId((prev) => (prev === bookId ? null : bookId));
+    // TODO: Itt lehetne kommenteket betölteni az adatbázisból
+  };
+  const handleCloseBack = () => setFlippedBookId(null);
+
   // Ha nincs bejelentkezve, mutasd az üdvözlő képernyőt
   if (!user) {
     return (
@@ -124,64 +150,87 @@ export function Home({ user }: HomeProps) {
       ) : (
         <div className="books-grid">
           {books.map((book) => (
-            <div key={book.id} className="book-card">
-              <div className="book-cover">
-                {book.coverUrl ? (
-                  <img
-                    src={book.coverUrl}
-                    alt={book.title}
-                    className="cover-image"
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                      (e.target as HTMLImageElement).parentElement!.querySelector('.cover-placeholder')!.classList.remove('hidden-placeholder');
-                    }}
-                  />
-                ) : null}
-                <div className={`cover-placeholder ${book.coverUrl ? 'hidden-placeholder' : ''}`}>📖</div>
-              </div>
-              <div className="book-info">
-                <h3>{book.title}</h3>
-                <p className="book-author">{book.author}</p>
-                <div className="book-meta">
-                  <span className="badge">{book.literaryForm}</span>
-                  <span className="badge badge-genre">{book.genre}</span>
-                </div>
-                
-                {/* Átlagos értékelés megjelenítése */}
-                <div className="book-rating-section" style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
-                    Átlagos értékelés:
-                  </div>
-                  <StarRating
-                    rating={book.averageRating || 0}
+            <div key={book.id} className="book-card" style={{ position: 'relative' }}>
+              {flippedBookId === book.id ? (
+                <div onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer', height: '100%' }}>
+                  <BookBack
+                    title={book.title}
+                    author={book.author}
+                    averageRating={book.averageRating || 0}
                     totalRatings={book.totalRatings || 0}
-                    readonly
-                    size="small"
-                  />
-                </div>
+                    comments={bookComments[book.id] || []}
 
-                {/* Felhasználó értékelése */}
-                <div className="user-rating-section" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid #eee' }}>
-                  <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
-                    {userRatings[book.id] ? 'Az értékelésed:' : 'Értékeld te is:'}
-                  </div>
-                  <StarRating
-                    rating={userRatings[book.id] || 0}
-                    onRate={(rating) => handleRate(book.id, rating)}
-                    size="medium"
                   />
                 </div>
-                
-                {book.lyricNote && (
-                  <p className="book-lyric-note">"{book.lyricNote}"</p>
-                )}
-                <span className="book-number">#{book.sequenceNumber}</span>
-              </div>
+              ) : (
+                <>
+                  <div className="book-cover" onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer' }}>
+                    {book.coverUrl ? (
+                      <img
+                        src={book.coverUrl}
+                        alt={book.title}
+                        className="cover-image"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.target as HTMLImageElement).parentElement!.querySelector('.cover-placeholder')!.classList.remove('hidden-placeholder');
+                        }}
+                      />
+                    ) : null}
+                    <div className={`cover-placeholder ${book.coverUrl ? 'hidden-placeholder' : ''}`}>📖</div>
+                  </div>
+                  <div className="book-info">
+                    <h3>{book.title}</h3>
+                    <p className="book-author">{book.author}</p>
+                    <div className="book-meta">
+                      <span className="badge">{book.literaryForm}</span>
+                      <span className="badge badge-genre">{book.genre}</span>
+                    </div>
+                    {/* Átlagos értékelés megjelenítése */}
+                    <div className="book-rating-section" style={{ marginBottom: '12px' }}>
+                      <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
+                        Átlagos értékelés:
+                      </div>
+                      <StarRating
+                        rating={book.averageRating || 0}
+                        totalRatings={book.totalRatings || 0}
+                        readonly
+                        size="small"
+                      />
+                    </div>
+
+                    {/* Felhasználó értékelése */}
+                    <div className="user-rating-section" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid #eee' }}>
+                      <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
+                        {userRatings[book.id] ? 'Az értékelésed:' : 'Értékeld te is:'}
+                      </div>
+                      <StarRating
+                        rating={userRatings[book.id] || 0}
+                        onRate={(rating) => handleRate(book.id, rating)}
+                        size="medium"
+                      />
+                    </div>
+                    
+                    <span className="book-number">#{book.sequenceNumber}</span>
+                  </div>
+                  <div className="book-card-actions">
+                    <button className="btn btn-comment" onClick={() => handleOpenComment(book)}>Komment</button>
+                    <button className="btn btn-addlist">Listához adás</button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
       )}
+
+      {/* Komment ablak */}
+      <CommentModal
+        isOpen={commentModalOpen}
+        onClose={handleCloseComment}
+        onSave={handleSaveComment}
+        bookTitle={selectedBook?.title || ''}
+      />
     </div>
   );
 }

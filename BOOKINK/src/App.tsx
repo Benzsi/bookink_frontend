@@ -7,6 +7,7 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Profile } from './pages/Profile'
 import { AdminUsers } from './pages/AdminUsers'
+import { MyLists } from './pages/MyLists'
 import type { User } from './services/api'
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
       <main className="main-container">
         <Routes>
           <Route path="/" element={<Home user={user} />} />
+          <Route path="/mylists" element={<MyLists />} />
           <Route
             path="/login"
             element={
