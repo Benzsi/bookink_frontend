@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StarRating } from './StarRating';
 
 interface BookBackProps {
@@ -9,6 +10,30 @@ interface BookBackProps {
 }
 
 export function BookBack({ title, author, averageRating, totalRatings, comments }: BookBackProps) {
+  const [likes, setLikes] = useState<Record<number, number>>({});
+  const [dislikes, setDislikes] = useState<Record<number, number>>({});
+  const [userVotes, setUserVotes] = useState<Record<number, 'like' | 'dislike' | null>>({});
+
+  const handleLike = (index: number) => {
+    const currentVote = userVotes[index];
+    const newLikes = { ...likes, [index]: (likes[index] || 0) + (currentVote === 'like' ? -1 : 1) };
+    const newDislikes = currentVote === 'dislike' ? { ...dislikes, [index]: (dislikes[index] || 1) - 1 } : dislikes;
+    
+    setLikes(newLikes);
+    setDislikes(newDislikes);
+    setUserVotes({ ...userVotes, [index]: currentVote === 'like' ? null : 'like' });
+  };
+
+  const handleDislike = (index: number) => {
+    const currentVote = userVotes[index];
+    const newDislikes = { ...dislikes, [index]: (dislikes[index] || 0) + (currentVote === 'dislike' ? -1 : 1) };
+    const newLikes = currentVote === 'like' ? { ...likes, [index]: (likes[index] || 1) - 1 } : likes;
+    
+    setDislikes(newDislikes);
+    setLikes(newLikes);
+    setUserVotes({ ...userVotes, [index]: currentVote === 'dislike' ? null : 'dislike' });
+  };
+
   return (
     <div className="book-back">
       <h3>{title}</h3>
@@ -34,21 +59,60 @@ export function BookBack({ title, author, averageRating, totalRatings, comments 
           }}>
             {comments.map((c, i) => (
               <div key={i} style={{ 
-                fontSize: '12px',
+                fontSize: '14px',
+                padding: '10px',
+                backgroundColor: '#f9f9f9',
+                borderRadius: '6px',
+                borderLeft: '3px solid var(--color-primary)',
               }}>
                 <div style={{ 
                   fontWeight: 700, 
                   color: 'var(--color-primary)',
-                  marginBottom: 2,
+                  marginBottom: 4,
+                  fontSize: '15px',
                 }}>
                   {c.user}
                 </div>
                 <div style={{ 
                   color: '#333',
-                  lineHeight: 1.4,
-                  wordWrap: 'break-word'
+                  lineHeight: 1.5,
+                  wordWrap: 'break-word',
+                  marginBottom: 8,
+                  fontSize: '14px',
                 }}>
                   {c.text}
+                </div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button
+                    onClick={() => handleLike(i)}
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '12px',
+                      border: `1px solid ${userVotes[i] === 'like' ? 'var(--color-primary)' : '#ddd'}`,
+                      backgroundColor: userVotes[i] === 'like' ? 'var(--color-primary)' : '#fff',
+                      color: userVotes[i] === 'like' ? '#fff' : '#333',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    👍 {likes[i] || 0}
+                  </button>
+                  <button
+                    onClick={() => handleDislike(i)}
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '12px',
+                      border: `1px solid ${userVotes[i] === 'dislike' ? 'var(--color-secondary)' : '#ddd'}`,
+                      backgroundColor: userVotes[i] === 'dislike' ? 'var(--color-secondary)' : '#fff',
+                      color: userVotes[i] === 'dislike' ? '#fff' : '#333',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    👎 {dislikes[i] || 0}
+                  </button>
                 </div>
               </div>
             ))}

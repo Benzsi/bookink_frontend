@@ -34,7 +34,6 @@ export function Home({ user }: HomeProps) {
   const [lists, setLists] = useState<BookList[]>([]);
   const [selectedBookForList, setSelectedBookForList] = useState<BookWithRating | null>(null);
   const [bookComments, setBookComments] = useState<BookComments>({});
-  const [loadingComments, setLoadingComments] = useState(false);
   const booksService = new BooksService();
   const ratingsService = new RatingsService();
   const commentsService = new CommentsService();
@@ -141,14 +140,11 @@ export function Home({ user }: HomeProps) {
       setFlippedBookId(bookId);
       // Töltsd be a kommenteket a megjelenítéshez
       if (!bookComments[bookId]) {
-        setLoadingComments(true);
         try {
           const comments = await commentsService.getBookComments(bookId);
           setBookComments({ ...bookComments, [bookId]: comments });
         } catch (err) {
           console.error('Kommentek betöltése sikertelen:', err);
-        } finally {
-          setLoadingComments(false);
         }
       }
     }
