@@ -25,6 +25,9 @@ export function Header({ isAuthenticated, onLogout }: HeaderProps) {
             />
           </div>
         </div>
+        <Link to="/ai-search" className="navbar-link">
+          🤖 AI Keresés
+        </Link>
         {isAuthenticated && (
           <Link to="/mylists" className="navbar-link">
             Saját listáim

@@ -8,6 +8,7 @@ import { Register } from './pages/Register'
 import { Profile } from './pages/Profile'
 import { AdminUsers } from './pages/AdminUsers'
 import { MyLists } from './pages/MyLists'
+import { AISearch } from './pages/AISearch'
 import type { User } from './services/api'
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home user={user} />} />
           <Route path="/mylists" element={<MyLists />} />
+          <Route path="/ai-search" element={<AISearch />} />
           <Route
             path="/login"
             element={
