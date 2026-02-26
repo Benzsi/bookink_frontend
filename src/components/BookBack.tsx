@@ -35,7 +35,7 @@ export function BookBack({ title, author, averageRating, totalRatings, comments 
   };
 
   return (
-    <div className="book-back">
+    <div className="book-back" style={{ position: 'relative', height: '100%', opacity: 1, pointerEvents: 'auto', display: 'flex', flexDirection: 'column', padding: '24px 18px 18px 18px' }}>
       <h3>{title}</h3>
       <div style={{ fontStyle: 'italic', color: '#666', marginBottom: 12 }}>{author}</div>
       
@@ -52,10 +52,11 @@ export function BookBack({ title, author, averageRating, totalRatings, comments 
           <div style={{ 
             overflow: 'auto',
             flex: 1,
+            minHeight: 0,
             display: 'flex',
             flexDirection: 'column',
             gap: 8,
-            paddingRight: 4,
+            paddingRight: 8,
           }}>
             {comments.map((c, i) => (
               <div key={i} style={{ 
@@ -103,8 +104,8 @@ export function BookBack({ title, author, averageRating, totalRatings, comments 
                     style={{
                       padding: '4px 10px',
                       fontSize: '12px',
-                      border: `1px solid ${userVotes[i] === 'dislike' ? 'var(--color-secondary)' : '#ddd'}`,
-                      backgroundColor: userVotes[i] === 'dislike' ? 'var(--color-secondary)' : '#fff',
+                      border: `1px solid ${userVotes[i] === 'dislike' ? 'var(--color-primary)' : '#ddd'}`,
+                      backgroundColor: userVotes[i] === 'dislike' ? 'var(--color-primary)' : '#fff',
                       color: userVotes[i] === 'dislike' ? '#fff' : '#333',
                       borderRadius: '4px',
                       cursor: 'pointer',
@@ -122,3 +123,4 @@ export function BookBack({ title, author, averageRating, totalRatings, comments 
     </div>
   );
 }
+

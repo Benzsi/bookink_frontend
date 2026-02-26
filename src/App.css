@@ -95,7 +95,7 @@ body { font-family: Arial, sans-serif; background: #f5f5f5; color: #222; }
 .book-card {
   transition: transform 0.5s;
   perspective: 1000px;
-  min-height: 420px;
+  height: 550px;
 }
 .book-card-inner {
   position: relative;
