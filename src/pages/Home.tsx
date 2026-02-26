@@ -210,7 +210,18 @@ export function Home({ user }: HomeProps) {
           {books.map((book) => (
             <div key={book.id} className="book-card" style={{ position: 'relative' }}>
               {flippedBookId === book.id ? (
-                <div onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer', height: '100%' }}>
+                <div onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <div className="book-header" style={{ padding: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline', flexWrap: 'wrap' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, color: '#222' }}>{book.title}</h3>
+                      <p style={{ fontSize: '12px', color: '#666', margin: 0, fontStyle: 'italic' }}>-</p>
+                      <p style={{ fontSize: '12px', color: '#666', margin: 0, fontStyle: 'italic' }}>{book.author}</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      <span className="badge">{book.literaryForm}</span>
+                      <span className="badge badge-genre">{book.genre}</span>
+                    </div>
+                  </div>
                   <BookBack
                     title={book.title}
                     author={book.author}
@@ -224,7 +235,18 @@ export function Home({ user }: HomeProps) {
                 </div>
               ) : (
                 <>
-                  <div className="book-cover" onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer' }}>
+                  <div className="book-header" style={{ padding: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline', flexWrap: 'wrap' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, color: '#222' }}>{book.title}</h3>
+                      <p style={{ fontSize: '12px', color: '#666', margin: 0, fontStyle: 'italic' }}>-</p>
+                      <p style={{ fontSize: '12px', color: '#666', margin: 0, fontStyle: 'italic' }}>{book.author}</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      <span className="badge">{book.literaryForm}</span>
+                      <span className="badge badge-genre">{book.genre}</span>
+                    </div>
+                  </div>
+                  <div className="book-cover" onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer', marginTop: '8px' }}>
                     {book.coverUrl ? (
                       <img
                         src={book.coverUrl}
@@ -240,12 +262,6 @@ export function Home({ user }: HomeProps) {
                     <div className={`cover-placeholder ${book.coverUrl ? 'hidden-placeholder' : ''}`}>📖</div>
                   </div>
                   <div className="book-info">
-                    <h3>{book.title}</h3>
-                    <p className="book-author">{book.author}</p>
-                    <div className="book-meta">
-                      <span className="badge">{book.literaryForm}</span>
-                      <span className="badge badge-genre">{book.genre}</span>
-                    </div>
                     {/* Átlagos értékelés megjelenítése */}
                     <div className="book-rating-section" style={{ marginBottom: '12px' }}>
                       <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>
