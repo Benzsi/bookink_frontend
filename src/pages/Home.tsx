@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import type { User, Book } from '../services/api';
 import { BooksService, RatingsService, CommentsService, type Comment } from '../services/api';
+import { resolveCoverUrl } from '../services/api';
 import { StarRating } from '../components/StarRating';
 import { CommentModal } from '../components/CommentModal';
 import { BookBack } from '../components/BookBack';
@@ -249,7 +250,7 @@ export function Home({ user }: HomeProps) {
                   <div className="book-cover" onClick={() => handleFlipBook(book.id)} style={{ cursor: 'pointer', marginTop: '8px' }}>
                     {book.coverUrl ? (
                       <img
-                        src={book.coverUrl}
+                        src={resolveCoverUrl(book.coverUrl)}
                         alt={book.title}
                         className="cover-image"
                         referrerPolicy="no-referrer"

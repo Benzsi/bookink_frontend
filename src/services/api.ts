@@ -1,7 +1,15 @@
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 const API_URL = `${API_BASE_URL}/api`;
 
-const getAuthHeader = () => {
+export const resolveCoverUrl = (coverUrl?: string): string => {
+  if (!coverUrl) return '';
+  if (coverUrl.startsWith('http://') || coverUrl.startsWith('https://')) {
+    return coverUrl;
+  }
+  return `${API_BASE_URL}${coverUrl.startsWith('/') ? '' : '/'}${coverUrl}`;
+};
+
+const getAuthHeader = (): Record<string, string> => {
   const token = localStorage.getItem('authToken');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
