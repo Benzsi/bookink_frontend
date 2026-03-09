@@ -185,12 +185,18 @@ export function Home({ user, searchQuery = '' }: HomeProps) {
     }
   };
 
-  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const normalizeForSearch = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+  const normalizedQuery = normalizeForSearch(searchQuery.trim());
   const filteredBooks = books.filter((book) => {
     if (!normalizedQuery) return true;
 
     return [book.title, book.author, book.genre, book.literaryForm]
-      .some((field) => field?.toLowerCase().includes(normalizedQuery));
+      .some((field) => normalizeForSearch(field ?? '').includes(normalizedQuery));
   });
 
   // Ha nincs bejelentkezve, mutasd az üdvözlő képernyőt
