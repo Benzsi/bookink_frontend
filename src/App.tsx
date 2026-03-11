@@ -13,6 +13,7 @@ import type { User } from './services/api'
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
 
   // Az oldal betöltésekor helyreállítjuk az előző felhasználót
@@ -28,12 +29,6 @@ function App() {
     }
     setLoading(false)
   }, [])
-
-  const handleLogout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
-    localStorage.removeItem('authToken')
-  }
 
   const handleLoginSuccess = (userData: User) => {
     setUser(userData)
@@ -56,10 +51,14 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header isAuthenticated={user !== null} onLogout={handleLogout} />
+      <Header
+        isAuthenticated={user !== null}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
       <main className="main-container">
         <Routes>
-          <Route path="/" element={<Home user={user} />} />
+          <Route path="/" element={<Home user={user} searchQuery={searchQuery} />} />
           <Route path="/mylists" element={<MyLists />} />
           <Route path="/ai-search" element={<AISearch />} />
           <Route
