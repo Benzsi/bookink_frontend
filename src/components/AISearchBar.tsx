@@ -20,7 +20,7 @@ export const AISearchBar: React.FC<Props> = ({ onFiltersExtracted }) => {
   const handleAISubmit = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/ai-filter', {
+      const response = await fetch('http://localhost:3000/ai-filter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input }),
