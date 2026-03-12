@@ -206,10 +206,9 @@ export function Home({ user, searchQuery = '' }: HomeProps) {
   if (!user) {
     return (
       <div className="home">
-        <h1>Üdvözlünk a Bookinkben!</h1>
+        <h1>indie.backseat</h1>
         <p>
-          Fedezd fel a világ legszebb könyveit, ossz meg ajánlásokat az olvasók
-          közösségével, és építsd ki saját könyvtáradat.
+          Tudj meg mindent egy helyen a kedvenc indie játékodról.
         </p>
         <div className="home-buttons">
           <Link to="/register" className="btn-primary">
@@ -226,14 +225,14 @@ export function Home({ user, searchQuery = '' }: HomeProps) {
   // Ha bejelentkezve van, mutasd a könyveket
   return (
     <div className="home-authenticated">
-      <h1>Könyvek katalógusa</h1>
+      <h1>Játékok</h1>
       
       {error && <div className="error-message">{error}</div>}
       
       {loading ? (
-        <div className="loading">Könyvek betöltése...</div>
+        <div className="loading">Játékok betöltése...</div>
       ) : books.length === 0 ? (
-        <div className="no-books">Jelenleg nincsenek könyvek a katalógusban.</div>
+        <div className="no-books">Jelenleg nincsenek játékok a katalógusban.</div>
       ) : filteredBooks.length === 0 ? (
         <div className="no-books">Nincs találat a megadott keresésre.</div>
       ) : (
