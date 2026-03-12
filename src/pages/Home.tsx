@@ -100,9 +100,16 @@ export function Home({ user, searchQuery = '' }: HomeProps) {
     if (!user) return;
     try {
       await ratingsService.rateBook(user.id, bookId, rating);
-      setUserRatings({ ...userRatings, [bookId]: rating });
-      // Frissítjük a könyvek listáját az új átlaggal
-      await fetchBooks();
+      setUserRatings((prev) => ({ ...prev, [bookId]: rating }));
+      // Csak az érintett könyv átlagát frissítjük, nem töltjük újra az egészet
+      const updatedRating = await ratingsService.getBookRating(bookId);
+      setBooks((prev) =>
+        prev.map((b) =>
+          b.id === bookId
+            ? { ...b, averageRating: updatedRating.averageRating, totalRatings: updatedRating.totalRatings }
+            : b
+        )
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Hiba az értékelés során');
     }
